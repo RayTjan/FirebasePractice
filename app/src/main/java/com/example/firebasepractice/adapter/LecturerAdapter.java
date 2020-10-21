@@ -49,7 +49,6 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.CardVi
         }
         else{
             holder.iconGender.setImageResource(R.drawable.teachfemale);
-
         }
     }
 

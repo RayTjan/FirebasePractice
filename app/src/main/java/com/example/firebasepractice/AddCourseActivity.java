@@ -61,6 +61,7 @@ public class AddCourseActivity extends AppCompatActivity {
     Toolbar bar;
     DatabaseReference dbLecturer;
     ArrayList<String> listLecturer, timeFinArrNew;
+    ArrayList<Lecturer> lecturerArrayList;
     String[] timeFinArr;
     Course course;
     Dialog dialog;
@@ -71,12 +72,13 @@ public class AddCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
-        listLecturer = new ArrayList<String>();
+        listLecturer = new ArrayList<String>(); //should not store name but ID so edits can be updated
 
         bar = findViewById(R.id.toolbarAddCourse);
         setSupportActionBar(bar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        lecturerArrayList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         dialog = Glovar.loadingDialog(this);
         mUserDatabase = FirebaseDatabase.getInstance().getReference("Course");
@@ -89,7 +91,10 @@ public class AddCourseActivity extends AppCompatActivity {
         lecturerS = findViewById(R.id.spinner_lecturer);
         loadingBar = new ProgressDialog(this);
         mSubject.getEditText().addTextChangedListener(inputCheck);
+        Intent intent = getIntent();
+        action = intent.getStringExtra("action");
         fetchLectData();
+
         timeS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -114,8 +119,7 @@ public class AddCourseActivity extends AppCompatActivity {
             }
         });
 
-        Intent intent = getIntent();
-        action = intent.getStringExtra("action");
+
         if (action.equals("add")) {
             getSupportActionBar().setTitle("ADD COURSE");
             addCourse.setText("Add Course");
@@ -126,19 +130,26 @@ public class AddCourseActivity extends AppCompatActivity {
                     AddCourse();
                 }
             });
-        } else { //saat activity dari lecturer detail & mau mengupdate data
+        } else {
             course = intent.getParcelableExtra("edit_data_course");
             timeStart = course.getStartTime();
             timeFinish = course.getFinishTime();
             day = course.getDay();
             lecturer = course.getLecturer();
+            for (int i = 0 ; i<lecturerArrayList.size();i++){
+                if (lecturerArrayList.equals(lecturerArrayList.get(i).getId())){
+                    lecturer = lecturerArrayList.get(i).getName();
+                    break;
+                }
+            }
+            Log.d("LECTuRER",lecturer);
             String[] timeStartArr = getResources().getStringArray(R.array.timeStart);
             String[] timeFinArr = getResources().getStringArray(R.array.timeFin);
             String[] dayArr = getResources().getStringArray(R.array.day);
             Log.d("ARRAYY", timeStartArr[0]);
             getSupportActionBar().setTitle("EDIT COURSE");
             mSubject.getEditText().setText(course.getSubjectName());
-            //DAYY & LECTURER NOT YET WORKING FOR EDIT!!!!!!!!!!!!!!
+            // LECTURER NOT YET WORKING FOR EDIT!!!!!!!!!!!!!!
             // Prepares for if lecturer is empty
             // Lecturer can't have teaching time overllaping
             int posTimeS = 0;
@@ -165,14 +176,14 @@ public class AddCourseActivity extends AppCompatActivity {
                 }
             }
             dayS.setSelection(dayPos);
-            int posLect = 0;
-            for (int i = 0; i < listLecturer.size(); i++) {
-                if (lecturer.equals(listLecturer.get(i))) {
-                    posLect = i;
-                    break;
-                }
-            }
-            lecturerS.setSelection(posLect);
+//            int posLect = 0;
+//            for (int i = 0; i < listLecturer.size(); i++) {
+//                if (lecturer.equalsIgnoreCase(listLecturer.get(i))) {
+//                    posLect = i;
+//                    break;
+//                }
+//            }
+//            lecturerS.setSelection(posLect);
             addCourse.setText("Edit Course");
             addCourse.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -210,11 +221,13 @@ public class AddCourseActivity extends AppCompatActivity {
                                     .show();
                         } else {
                             Map<String, Object> params = new HashMap<>();
+
                             params.put("subjectName", subjectName);
                             params.put("day", day);
                             params.put("startTime", timeStart);
                             params.put("finishTime", timeFinish);
                             params.put("lecturer", lecturer);
+                            params.put("lecturerID", setLecturerID(lecturer));
 
                             mUserDatabase.child(course.getId()).updateChildren(params).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -238,8 +251,44 @@ public class AddCourseActivity extends AppCompatActivity {
         }
     }
 
+    private void refreshLecturerName() {
+        mUserDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (final DataSnapshot childSnapshot : snapshot.getChildren()){
+                    String refreshLectName = "";
+                    Course course = childSnapshot.getValue(Course.class);
+                    for (int i =0; i< lecturerArrayList.size();i++){
+                        if (course.getLecturerID().equals(lecturerArrayList.get(i).getId())){
+                            refreshLectName = lecturerArrayList.get(i).getName();
+                        }
+
+                    }
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("lecturer", refreshLectName);
+                    mUserDatabase.child(course.getId()).updateChildren(params);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private String setLecturerID(String selectedLecturer) {
+        for (int i=0; i<listLecturer.size();i++){
+            if (selectedLecturer.equals(lecturerArrayList.get(i).getName())){
+                selectedLecturer = lecturerArrayList.get(i).getId();
+                break;
+            }
+        }
+        return selectedLecturer;
+    }
+
     private Boolean checkCourseTime() throws ParseException {
-        final Boolean[] overlap = {false};
+        final Boolean[] overlap = {false};//change this with MutableLiveData
 //        final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         final int startSecond = turnStringTimetoInt(timeStart);
         final int finishSecond = turnStringTimetoInt(timeFinish);
@@ -269,6 +318,7 @@ public class AddCourseActivity extends AppCompatActivity {
 
             }
         });
+
         Log.d("RESULT",Boolean.toString(overlap[0]));
         Boolean momentary = overlap[0];
         return momentary;
@@ -293,7 +343,11 @@ public class AddCourseActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                     Lecturer lecturer = childSnapshot.getValue(Lecturer.class);
+                    lecturerArrayList.add(lecturer);
                     listLecturer.add(lecturer.getName());
+                }
+                if (action.equals("add")){
+                    refreshLecturerName();
                 }
                 if (listLecturer.isEmpty()) {
                     new AlertDialog.Builder(AddCourseActivity.this)
@@ -352,8 +406,19 @@ public class AddCourseActivity extends AppCompatActivity {
     private void showLectSpinner(ArrayList<String> listLecturer) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listLecturer);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.notifyDataSetChanged();
         lecturerS.setAdapter(adapter);
-        getFormValue();
+        if(action.equalsIgnoreCase("edit")){
+            int posLect = 0;
+            for (int i = 0; i < listLecturer.size(); i++) {
+                if (lecturer.equalsIgnoreCase(listLecturer.get(i))) {
+                    posLect = i;
+                    break;
+                }
+            }
+            lecturerS.setSelection(posLect);
+        }
+//        getFormValue();
     }
 
     public void getFormValue() {
@@ -397,10 +462,12 @@ public class AddCourseActivity extends AppCompatActivity {
                             .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(final DialogInterface dialogInterface, int i) {
+
 //                                            Intent toMain = new Intent(AddCourseActivity.this, AddCourseActivity.class);
 //                                            toMain.putExtra("action", "add");
 //                                            startActivity(toMain);
 //                                            finish();
+
                                     dialogInterface.cancel();
 
                                 }
@@ -411,7 +478,7 @@ public class AddCourseActivity extends AppCompatActivity {
                     loadingBar.show();
 
                     String mid = mUserDatabase.push().getKey();
-                    Course course = new Course(mid, subjectName, day, timeStart, timeFinish, lecturer);
+                    Course course = new Course(mid, subjectName, day, timeStart, timeFinish, lecturer,setLecturerID(lecturer));
                     mUserDatabase.child(mid).setValue(course).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

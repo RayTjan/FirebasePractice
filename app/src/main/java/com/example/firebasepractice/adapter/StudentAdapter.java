@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +34,9 @@ import com.example.firebasepractice.StudentDataActivity;
 import com.example.firebasepractice.model.Lecturer;
 import com.example.firebasepractice.R;
 import com.example.firebasepractice.model.Student;
+import com.example.firebasepractice.model.Upload;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,11 +46,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardViewViewHolder>{
 
+    private List<Upload> mUploads;
     private Context context;
     private ArrayList<Student> listStudent;
     private ArrayList<Student> getListStudent() {
@@ -56,8 +64,10 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
     public void setListStudent(ArrayList<Student> listStudent) {
         this.listStudent = listStudent;
     }
-    public StudentAdapter(Context context) {
+    public StudentAdapter(Context context,List<Upload> uploads) {
         this.context = context;
+        mUploads = uploads;
+
     }
     Dialog dialog;
     AlphaAnimation klik = new AlphaAnimation(1F, 0.6F);
@@ -72,13 +82,44 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
     @SuppressLint("ResourceAsColor")
 
     @Override
-    public void onBindViewHolder(@NonNull CardViewViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final CardViewViewHolder holder, final int position) {
+
+
+
         final Student student = getListStudent().get(position);
         ArrayList<Student> listStudent = new ArrayList<Student>();
         final DatabaseReference dbStudent = FirebaseDatabase.getInstance().getReference("Student");
+        final DatabaseReference dbImage = FirebaseDatabase.getInstance().getReference("uploads");
+
         final ArrayList<Student> finalListStudent = listStudent;
         dialog = Glovar.loadingDialog(context);
         mAuth = FirebaseAuth.getInstance();
+        final String[] imageUri = {"none"};
+        dbImage.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot childSnapshot : snapshot.getChildren()){
+                    Upload upload = childSnapshot.getValue(Upload.class);
+                    if (upload.getName().equals(student.getId())){
+                        Picasso.get()
+                                .load(upload.getImageUrl())
+                                .placeholder(R.drawable.profile)
+                                .fit()
+                                .centerCrop()
+                                .into(holder.imageVIew);
+                        imageUri[0] = upload.getImageUrl();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
 
         dbStudent.addValueEventListener(new ValueEventListener() {
             @Override
@@ -122,6 +163,15 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 firebaseUser = mAuth.getCurrentUser();
                                                 firebaseUser.delete();
+                                                if ( !imageUri[0].equals("none")){
+                                                    StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUri[0]);
+                                                    imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            dbImage.child(student.getId()).removeValue();
+                                                        }
+                                                    });
+                                                }
                                                 dbStudent.child(student.getId()).removeValue(new DatabaseReference.CompletionListener() {
                                                     @Override
                                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
@@ -174,6 +224,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
 
     class CardViewViewHolder extends RecyclerView.ViewHolder{
         TextView cardName, cardGender,cardNIM, cardAge,cardAddress,cardEmail;
+        ImageView imageVIew;
         Button deleteStu,editStu;
         CardViewViewHolder(View itemView) {
             super(itemView);
@@ -185,6 +236,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
             cardEmail = itemView.findViewById(R.id.textView_EmailStuData);
             deleteStu = itemView.findViewById(R.id.button_stuDeleteData);
             editStu = itemView.findViewById(R.id.button_stuEditData);
+            imageVIew = itemView.findViewById(R.id.imageView_dataProfilePic);
         }
     }
 }

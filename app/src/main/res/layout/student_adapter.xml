@@ -24,7 +24,7 @@
             android:background="@drawable/button_shadow">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/imageView_dataProfilePic"
                 android:layout_width="77dp"
                 android:layout_height="78dp"
                 android:layout_marginStart="8dp"
@@ -53,7 +53,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/imageView_dataProfilePic"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/imageView_dataProfilePic"
                 app:layout_constraintTop_toBottomOf="@+id/textView_NameStuData" />
 
             <View
@@ -99,7 +99,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:text="NIM :"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/imageView_dataProfilePic"
                 app:layout_constraintTop_toBottomOf="@+id/textVIew_GenderStuData" />
 
             <TextView

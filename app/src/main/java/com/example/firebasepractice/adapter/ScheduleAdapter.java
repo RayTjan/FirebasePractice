@@ -25,6 +25,7 @@ import com.example.firebasepractice.AddCourseActivity;
 import com.example.firebasepractice.Glovar;
 import com.example.firebasepractice.model.Course;
 import com.example.firebasepractice.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +52,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.CardVi
     @NonNull
     @Override
     public ScheduleAdapter.CardViewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.course_adapter, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.coursetaken_adapter, parent, false);
         return new ScheduleAdapter.CardViewViewHolder(view);
     }
 
@@ -60,7 +61,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.CardVi
     public void onBindViewHolder(@NonNull final ScheduleAdapter.CardViewViewHolder holder, final int position) {
         final Course course = getListCourse().get(position);
         ArrayList<Course> listCourse = new ArrayList<Course>();
-        final DatabaseReference dbCourse = FirebaseDatabase.getInstance().getReference("Course Taken");
+        final DatabaseReference dbCourse = FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
         final ArrayList<Course> finalListCourse = listCourse;
         dialog = Glovar.loadingDialog(context);
         dbCourse.addValueEventListener(new ValueEventListener() {
@@ -86,44 +87,23 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.CardVi
             @Override
             public void onClick(View v) {
                 v.startAnimation(klik);
-                new AlertDialog.Builder(context)
-                        .setTitle("Confirmation")
-                        .setMessage("Are you sure to delete "+course.getSubjectName()+" data?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                dialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.cancel();
+                        dbCourse.child(course.getId()).removeValue(new DatabaseReference.CompletionListener() {
                             @Override
-                            public void onClick(final DialogInterface dialogInterface, int i) {
-                                dialog.show();
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        dialog.cancel();
-                                        dbCourse.child(course.getId()).removeValue(new DatabaseReference.CompletionListener() {
-                                            @Override
-                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                                Intent in = new Intent(context, AddCourseActivity.class);
-                                                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                Toast.makeText(context, "Delete success!", Toast.LENGTH_SHORT).show();
-                                                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
-                                                context.startActivity(in, options.toBundle());
-                                                ((Activity)context).finish();
-                                                dialogInterface.cancel();
-                                            }
-                                        });
-
-                                    }
-                                }, 2000);
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                Toast.makeText(context, "Delete success!", Toast.LENGTH_SHORT).show();
                             }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .create()
-                        .show();
+                        });
+                    }
+                }, 2000);
             }
+
+
+
         });
 
     }

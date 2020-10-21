@@ -1,19 +1,24 @@
 package com.example.firebasepractice;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -22,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.firebasepractice.model.Student;
+import com.example.firebasepractice.model.Upload;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +39,12 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,12 +64,21 @@ public class RegisterStudentActivity extends AppCompatActivity {
     Toolbar bar;
     Dialog dialog;
     Student student;
+    ImageView profilePic;
+    Button changePic;
+    private Uri mImageUri;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+
+    private StorageTask mUploadTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference("Student");
         dialog = Glovar.loadingDialog(this);
@@ -75,6 +96,8 @@ public class RegisterStudentActivity extends AppCompatActivity {
         buttonLR = findViewById(R.id.button_registerStu);
         loadingBar = new ProgressDialog(this);
         radioGroup = findViewById(R.id.radioGroup_student);
+        profilePic = findViewById(R.id.imageView_ProfilePic);
+        changePic = findViewById(R.id.button_changeImage);
 
         mName.getEditText().addTextChangedListener(inputCheck);
         mNIM.getEditText().addTextChangedListener(inputCheck);
@@ -100,6 +123,13 @@ public class RegisterStudentActivity extends AppCompatActivity {
 //        else if (action.equalsIgnoreCase("edit")){
 //            getFormValue();
 //        }
+        changePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
 
 
         if(action.equals("add")){
@@ -114,6 +144,7 @@ public class RegisterStudentActivity extends AppCompatActivity {
             buttonLR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     getFormValue();
                     addStudent();
                 }
@@ -142,6 +173,12 @@ public class RegisterStudentActivity extends AppCompatActivity {
             buttonLR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (mUploadTask!=null &&mUploadTask.isInProgress()){
+                        Toast.makeText(RegisterStudentActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        uploadFile(student.getId());
+                    }
                     dialog.show();
                     getFormValue();
                     Map<String,Object> params = new HashMap<>();
@@ -171,7 +208,66 @@ public class RegisterStudentActivity extends AppCompatActivity {
         }
     }
 
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+
+            Picasso.get().load(mImageUri).into(profilePic);
+        }
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+        //only to get file extension from image
+    }
+
+    private void uploadFile(final String sid) {
+        if (mImageUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() +
+                    "." + getFileExtension(mImageUri));
+
+
+            mUploadTask = fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+//                            Toast.makeText(RegisterStudentActivity.this, "Upload Successful!", Toast.LENGTH_LONG).show();
+//                            Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),
+//                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+//                            String uploadID = mDatabaseRef.push().getKey();
+//                            mDatabaseRef.child(uploadID).setValue(upload);
+                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                            while (!urlTask.isSuccessful());
+                            Uri downloadUrl = urlTask.getResult();
+                            Upload upload = new Upload(sid,downloadUrl.toString());
+                            mDatabaseRef.child(sid).setValue(upload);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RegisterStudentActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+//            Toast.makeText(this, "No File Selected", Toast.LENGTH_SHORT).show();
+
+        }
+    }
 
     public void getFormValue(){
         name = mName.getEditText().getText().toString().trim();
@@ -186,13 +282,27 @@ public class RegisterStudentActivity extends AppCompatActivity {
     public void addStudent(){
         getFormValue();
         dialog.show();
+
         mAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(RegisterStudentActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                uid = mAuth.getCurrentUser().getUid();
+                Student student = new Student(mAuth.getCurrentUser().getUid(),name,nim, gender,age,address,email,pass);
+                if (mUploadTask!=null &&mUploadTask.isInProgress()){
+                    Toast.makeText(RegisterStudentActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    uploadFile(student.getId());
+                }
                 if (task.isSuccessful()){
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                        }
+                    }, 2000);
                     dialog.cancel();
-                    uid = mAuth.getCurrentUser().getUid();
-                    Student student = new Student(mAuth.getCurrentUser().getUid(),name,nim, gender,age,address,email,pass);
+
                     mUserDatabase.child(mAuth.getCurrentUser().getUid()).setValue(student).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

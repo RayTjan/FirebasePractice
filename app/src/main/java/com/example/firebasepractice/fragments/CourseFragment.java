@@ -21,6 +21,7 @@ import com.example.firebasepractice.CourseDataActivity;
 import com.example.firebasepractice.ItemClickSupport;
 import com.example.firebasepractice.R;
 import com.example.firebasepractice.adapter.CourseAdapter;
+import com.example.firebasepractice.adapter.CourseListAdapter;
 import com.example.firebasepractice.model.Course;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -80,9 +81,9 @@ public class CourseFragment extends Fragment {
 
     public void showCourseData(final ArrayList<Course> list){
         rvCourse.setLayoutManager(new LinearLayoutManager(getActivity()));
-        CourseAdapter courseAdapter = new CourseAdapter(getActivity());
-        courseAdapter.setListCourse(list);
-        rvCourse.setAdapter(courseAdapter);
+        CourseListAdapter courseListAdapter = new CourseListAdapter(getActivity());
+        courseListAdapter.setListCourse(list);
+        rvCourse.setAdapter(courseListAdapter);
 
         ItemClickSupport.addTo(rvCourse).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override

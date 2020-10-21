@@ -52,7 +52,7 @@ public class CourseDataActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listCourse.clear();
                 rvCourse.setAdapter(null);
-                for (DataSnapshot childSnapshot : snapshot.getChildren()){
+                for (final DataSnapshot childSnapshot : snapshot.getChildren()){
                     Course course = childSnapshot.getValue(Course.class);
                     listCourse.add(course);
                 }
