@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">FirebasePractice</string>
+    <string-array name="timeStart">
+        <item>07:30:00</item>
+        <item>08:00:00</item>
+        <item>08:30:00</item>
+        <item>09:00:00</item>
+        <item>09:30:00</item>
+        <item>10:00:00</item>
+        <item>10:30:00</item>
+        <item>11:00:00</item>
+        <item>11:30:00</item>
+        <item>12:00:00</item>
+        <item>12:30:00</item>
+        <item>13:00:00</item>
+        <item>13:30:00</item>
+        <item>14:00:00</item>
+        <item>14:30:00</item>
+        <item>15:00:00</item>
+        <item>15:30:00</item>
+        <item>16:00:00</item>
+        <item>16:30:00</item>
+    </string-array>
+    <string-array name="timeFin">
+        <item>08:00:00</item>
+        <item>08:30:00</item>
+        <item>09:00:00</item>
+        <item>09:30:00</item>
+        <item>10:00:00</item>
+        <item>10:30:00</item>
+        <item>11:00:00</item>
+        <item>11:30:00</item>
+        <item>12:00:00</item>
+        <item>12:30:00</item>
+        <item>13:00:00</item>
+        <item>13:30:00</item>
+        <item>14:00:00</item>
+        <item>14:30:00</item>
+        <item>15:00:00</item>
+        <item>15:30:00</item>
+        <item>16:00:00</item>
+        <item>16:30:00</item>
+        <item>17:00:00</item>
+    </string-array>
+    <string-array name="day">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.firebasepractice">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:label="EDUCATE"
+        android:roundIcon="@drawable/logo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".CourseDataActivity"></activity>
+        <activity android:name=".StudentDataActivity" />
+        <activity android:name=".adapter.StudentAdapter"
+            tools:ignore="Instantiatable" />
+        <activity android:name=".LecturerDetailActivity" />
+        <activity android:name=".adapter.LecturerAdapter"
+            tools:ignore="Instantiatable" />
+        <activity android:name=".LecturerDataActivity" />
+        <activity android:name=".LoginStudentActivity" android:noHistory="true" />
+        <activity android:name=".AddCourseActivity" />
+        <activity android:name=".AddLecturerActivity" />
+        <activity android:name=".StarterActivity" android:noHistory="true" />
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.HOME" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".RegisterStudentActivity" />
+        <activity android:name=".MainActivity" android:noHistory="true" />
+
+    </application>
+
+</manifest>
