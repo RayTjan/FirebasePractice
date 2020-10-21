@@ -98,19 +98,25 @@ public class AddCourseActivity extends AppCompatActivity {
         timeS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-                try {
-                    if (dateFormat.parse(timeF.getSelectedItem().toString()).compareTo(dateFormat.parse(timeS.getSelectedItem().toString())) <= 0) {
-                        timeFinArrNew = new ArrayList<String>();
-                        for (int i = position; i < timeFinArr.length; i++) {
-                            timeFinArrNew.add(timeFinArr[i]);
-                        }
-                        setTimeF(timeFinArrNew);
-                    }
-                    timeFinArr = getResources().getStringArray(R.array.timeFin);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                timeFinArr = getResources().getStringArray(R.array.timeFin);
+                timeFinArrNew = new ArrayList<>();
+                for (int i = 0; i < timeFinArr.length; i++) {
+                    timeFinArrNew.add(timeFinArr[i]);
                 }
+                setTimeF(timeFinArrNew,position);
+//                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+//                try {
+//                    if (dateFormat.parse(timeF.getSelectedItem().toString()).compareTo(dateFormat.parse(timeS.getSelectedItem().toString())) <= 0) {
+//                        timeFinArrNew = new ArrayList<String>();
+//                        for (int i = position; i < timeFinArr.length; i++) {
+//                            timeFinArrNew.add(timeFinArr[i]);
+//                        }
+//
+//                    }
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+
             }
 
             @Override
@@ -136,13 +142,13 @@ public class AddCourseActivity extends AppCompatActivity {
             timeFinish = course.getFinishTime();
             day = course.getDay();
             lecturer = course.getLecturer();
-            for (int i = 0 ; i<lecturerArrayList.size();i++){
-                if (lecturerArrayList.equals(lecturerArrayList.get(i).getId())){
+            for (int i = 0; i < lecturerArrayList.size(); i++) {
+                if (lecturerArrayList.equals(lecturerArrayList.get(i).getId())) {
                     lecturer = lecturerArrayList.get(i).getName();
                     break;
                 }
             }
-            Log.d("LECTuRER",lecturer);
+            Log.d("LECTuRER", lecturer);
             String[] timeStartArr = getResources().getStringArray(R.array.timeStart);
             String[] timeFinArr = getResources().getStringArray(R.array.timeFin);
             String[] dayArr = getResources().getStringArray(R.array.day);
@@ -255,11 +261,11 @@ public class AddCourseActivity extends AppCompatActivity {
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (final DataSnapshot childSnapshot : snapshot.getChildren()){
+                for (final DataSnapshot childSnapshot : snapshot.getChildren()) {
                     String refreshLectName = "";
                     Course course = childSnapshot.getValue(Course.class);
-                    for (int i =0; i< lecturerArrayList.size();i++){
-                        if (course.getLecturerID().equals(lecturerArrayList.get(i).getId())){
+                    for (int i = 0; i < lecturerArrayList.size(); i++) {
+                        if (course.getLecturerID().equals(lecturerArrayList.get(i).getId())) {
                             refreshLectName = lecturerArrayList.get(i).getName();
                         }
 
@@ -278,8 +284,8 @@ public class AddCourseActivity extends AppCompatActivity {
     }
 
     private String setLecturerID(String selectedLecturer) {
-        for (int i=0; i<listLecturer.size();i++){
-            if (selectedLecturer.equals(lecturerArrayList.get(i).getName())){
+        for (int i = 0; i < listLecturer.size(); i++) {
+            if (selectedLecturer.equals(lecturerArrayList.get(i).getName())) {
                 selectedLecturer = lecturerArrayList.get(i).getId();
                 break;
             }
@@ -301,25 +307,26 @@ public class AddCourseActivity extends AppCompatActivity {
                     if (lecturer.equals(course.getLecturer())) {
                         int startDataSec = turnStringTimetoInt(course.getStartTime());
                         int finishDataSec = turnStringTimetoInt(course.getFinishTime());
-                        Log.d("TIMES",Integer.toString(startSecond));
-                        Log.d("TIMEF",Integer.toString(finishSecond));
-                        Log.d("TIMESD",Integer.toString(startDataSec));
-                        Log.d("TIMESF",Integer.toString(finishDataSec));
-                        if ((startDataSec >= startSecond && startSecond < finishDataSec) || (startDataSec > finishSecond && finishSecond <= finishDataSec)|| (startSecond<startDataSec && finishDataSec < finishSecond)) {
+                        Log.d("TIMES", Integer.toString(startSecond));
+                        Log.d("TIMEF", Integer.toString(finishSecond));
+                        Log.d("TIMESD", Integer.toString(startDataSec));
+                        Log.d("TIMESF", Integer.toString(finishDataSec));
+                        if ((startDataSec >= startSecond && startSecond < finishDataSec) || (startDataSec > finishSecond && finishSecond <= finishDataSec) || (startSecond < startDataSec && finishDataSec < finishSecond)) {
                             overlap[0] = true;
-                            Log.d("OVERLAPPED",Boolean.toString(overlap[0]));
+                            Log.d("OVERLAPPED", Boolean.toString(overlap[0]));
                         }
                     }
 
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
 
-        Log.d("RESULT",Boolean.toString(overlap[0]));
+        Log.d("RESULT", Boolean.toString(overlap[0]));
         Boolean momentary = overlap[0];
         return momentary;
         //the return does not wait for the onDataChange to do it's stuff
@@ -330,10 +337,27 @@ public class AddCourseActivity extends AppCompatActivity {
         return Integer.parseInt(timeSplit[0]) * 3600 + Integer.parseInt(timeSplit[1]) * 60 + Integer.parseInt(timeSplit[2]);
     }
 
-    private void setTimeF(ArrayList<String> timeFinArrNew) {
+    private void setTimeF(ArrayList<String> timeFinArrNew, int position) {
+
+        int posTimeF = 0;
+        for (int i = 0; i < timeFinArrNew.size(); i++) {
+            if (timeF.getSelectedItem().toString().equals(timeFinArrNew.get(i))){
+                posTimeF = i;
+                break;
+            }
+        }
+
+        for (int i = 0; i < position; i++) {
+            timeFinArrNew.remove(0);
+        }
+
         ArrayAdapter<String> adapterTime = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, timeFinArrNew);
         adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeF.setAdapter(adapterTime);
+        if (position< posTimeF){
+            posTimeF-= position;
+            timeF.setSelection(posTimeF);
+        }
     }
 
 
@@ -346,7 +370,7 @@ public class AddCourseActivity extends AppCompatActivity {
                     lecturerArrayList.add(lecturer);
                     listLecturer.add(lecturer.getName());
                 }
-                if (action.equals("add")){
+                if (action.equals("add")) {
                     refreshLecturerName();
                 }
                 if (listLecturer.isEmpty()) {
@@ -408,7 +432,7 @@ public class AddCourseActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.notifyDataSetChanged();
         lecturerS.setAdapter(adapter);
-        if(action.equalsIgnoreCase("edit")){
+        if (action.equalsIgnoreCase("edit")) {
             int posLect = 0;
             for (int i = 0; i < listLecturer.size(); i++) {
                 if (lecturer.equalsIgnoreCase(listLecturer.get(i))) {
@@ -478,7 +502,7 @@ public class AddCourseActivity extends AppCompatActivity {
                     loadingBar.show();
 
                     String mid = mUserDatabase.push().getKey();
-                    Course course = new Course(mid, subjectName, day, timeStart, timeFinish, lecturer,setLecturerID(lecturer));
+                    Course course = new Course(mid, subjectName, day, timeStart, timeFinish, lecturer, setLecturerID(lecturer));
                     mUserDatabase.child(mid).setValue(course).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
