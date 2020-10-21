@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.example.firebasepractice.R;
 
-public class ScheduleFragment extends Fragment {
-    public ScheduleFragment() {
+public class CourseListFragment extends Fragment {
+    public CourseListFragment() {
         // Required empty public constructor
     }
     @Override
@@ -19,7 +19,8 @@ public class ScheduleFragment extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.schedule_fragment, container, false);
+        return inflater.inflate(R.layout.courselist_fragment, container, false);
+
     }
 
 }

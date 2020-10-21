@@ -71,7 +71,7 @@ public class AddCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
-        listLecturer = new ArrayList<String>(); //should not store name but ID so edits can be updated
+        listLecturer = new ArrayList<String>();
 
         bar = findViewById(R.id.toolbarAddCourse);
         setSupportActionBar(bar);
@@ -89,8 +89,6 @@ public class AddCourseActivity extends AppCompatActivity {
         lecturerS = findViewById(R.id.spinner_lecturer);
         loadingBar = new ProgressDialog(this);
         mSubject.getEditText().addTextChangedListener(inputCheck);
-        Intent intent = getIntent();
-        action = intent.getStringExtra("action");
         fetchLectData();
         timeS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -116,7 +114,8 @@ public class AddCourseActivity extends AppCompatActivity {
             }
         });
 
-
+        Intent intent = getIntent();
+        action = intent.getStringExtra("action");
         if (action.equals("add")) {
             getSupportActionBar().setTitle("ADD COURSE");
             addCourse.setText("Add Course");
@@ -127,20 +126,19 @@ public class AddCourseActivity extends AppCompatActivity {
                     AddCourse();
                 }
             });
-        } else {
+        } else { //saat activity dari lecturer detail & mau mengupdate data
             course = intent.getParcelableExtra("edit_data_course");
             timeStart = course.getStartTime();
             timeFinish = course.getFinishTime();
             day = course.getDay();
             lecturer = course.getLecturer();
-            Log.d("LECTuRER",lecturer);
             String[] timeStartArr = getResources().getStringArray(R.array.timeStart);
             String[] timeFinArr = getResources().getStringArray(R.array.timeFin);
             String[] dayArr = getResources().getStringArray(R.array.day);
             Log.d("ARRAYY", timeStartArr[0]);
             getSupportActionBar().setTitle("EDIT COURSE");
             mSubject.getEditText().setText(course.getSubjectName());
-            // LECTURER NOT YET WORKING FOR EDIT!!!!!!!!!!!!!!
+            //DAYY & LECTURER NOT YET WORKING FOR EDIT!!!!!!!!!!!!!!
             // Prepares for if lecturer is empty
             // Lecturer can't have teaching time overllaping
             int posTimeS = 0;
@@ -167,14 +165,14 @@ public class AddCourseActivity extends AppCompatActivity {
                 }
             }
             dayS.setSelection(dayPos);
-//            int posLect = 0;
-//            for (int i = 0; i < listLecturer.size(); i++) {
-//                if (lecturer.equalsIgnoreCase(listLecturer.get(i))) {
-//                    posLect = i;
-//                    break;
-//                }
-//            }
-//            lecturerS.setSelection(posLect);
+            int posLect = 0;
+            for (int i = 0; i < listLecturer.size(); i++) {
+                if (lecturer.equals(listLecturer.get(i))) {
+                    posLect = i;
+                    break;
+                }
+            }
+            lecturerS.setSelection(posLect);
             addCourse.setText("Edit Course");
             addCourse.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -241,7 +239,7 @@ public class AddCourseActivity extends AppCompatActivity {
     }
 
     private Boolean checkCourseTime() throws ParseException {
-        final Boolean[] overlap = {false};//change this with MutableLiveData
+        final Boolean[] overlap = {false};
 //        final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         final int startSecond = turnStringTimetoInt(timeStart);
         final int finishSecond = turnStringTimetoInt(timeFinish);
@@ -271,7 +269,6 @@ public class AddCourseActivity extends AppCompatActivity {
 
             }
         });
-
         Log.d("RESULT",Boolean.toString(overlap[0]));
         Boolean momentary = overlap[0];
         return momentary;
@@ -355,19 +352,8 @@ public class AddCourseActivity extends AppCompatActivity {
     private void showLectSpinner(ArrayList<String> listLecturer) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listLecturer);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.notifyDataSetChanged();
         lecturerS.setAdapter(adapter);
-        if(action.equalsIgnoreCase("edit")){
-            int posLect = 0;
-            for (int i = 0; i < listLecturer.size(); i++) {
-                if (lecturer.equalsIgnoreCase(listLecturer.get(i))) {
-                    posLect = i;
-                    break;
-                }
-            }
-            lecturerS.setSelection(posLect);
-        }
-//        getFormValue();
+        getFormValue();
     }
 
     public void getFormValue() {
