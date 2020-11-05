@@ -4,15 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 
+import com.example.firebasepractice.Glovar;
 import com.example.firebasepractice.ItemClickSupport;
 import com.example.firebasepractice.R;
 import com.example.firebasepractice.adapter.CourseListAdapter;
@@ -32,6 +35,7 @@ public class ScheduleFragment extends Fragment {
     DatabaseReference dbCourseTaken,dbCourse;
     ArrayList<Course> listCourse;
     RecyclerView rvCourse;
+    Dialog dialog;
     AlphaAnimation klik = new AlphaAnimation(1F,0.6F);
     public ScheduleFragment() {
         // Required empty public constructor
@@ -47,7 +51,8 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        dialog = Glovar.loadingDialog(getActivity());
+        dialog.show();
         listCourse = new ArrayList<Course>();
         rvCourse = view.findViewById(R.id.recyclerView_CourseTaken);
         dbCourseTaken =  FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
@@ -56,15 +61,22 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void setCourseData() {
+        final MutableLiveData<Boolean> checkLoad = new MutableLiveData<>();
+
         final ArrayList<Course> allCourseList = new ArrayList<>();
         dbCourse.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int counter = 0;
                 for (DataSnapshot childSnapshot : snapshot.getChildren()){
                     Course course =  childSnapshot.getValue(Course.class);
                     allCourseList.add(course);
+                    counter++;
                 }
-                fetchCourseTakenData(allCourseList);
+                if (snapshot.getChildrenCount() == counter){
+                    fetchCourseTakenData(allCourseList);
+                    dialog.cancel();
+                }
             }
 
 
