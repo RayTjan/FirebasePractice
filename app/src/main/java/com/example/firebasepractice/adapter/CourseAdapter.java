@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.firebasepractice.AddCourseActivity;
-import com.example.firebasepractice.Glovar;
+import com.example.firebasepractice.etc.Glovar;
 import com.example.firebasepractice.model.Course;
 import com.example.firebasepractice.model.Lecturer;
 import com.example.firebasepractice.R;
@@ -35,7 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CardViewViewHolder>{
 

@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -21,19 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.firebasepractice.AddCourseActivity;
-import com.example.firebasepractice.AddLecturerActivity;
-import com.example.firebasepractice.Glovar;
-import com.example.firebasepractice.LecturerDataActivity;
-import com.example.firebasepractice.LecturerDetailActivity;
-import com.example.firebasepractice.MainActivity;
+import com.example.firebasepractice.etc.Glovar;
 import com.example.firebasepractice.R;
 import com.example.firebasepractice.RegisterStudentActivity;
 import com.example.firebasepractice.StarterActivity;
 import com.example.firebasepractice.model.Student;
 import com.example.firebasepractice.model.Upload;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

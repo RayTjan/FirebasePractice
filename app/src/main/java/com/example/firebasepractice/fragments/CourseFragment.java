@@ -4,27 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ActivityOptions;
-import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 
-import com.example.firebasepractice.AddCourseActivity;
-import com.example.firebasepractice.AddLecturerActivity;
-import com.example.firebasepractice.CourseDataActivity;
-import com.example.firebasepractice.Glovar;
-import com.example.firebasepractice.ItemClickSupport;
 import com.example.firebasepractice.R;
-import com.example.firebasepractice.adapter.CourseAdapter;
 import com.example.firebasepractice.adapter.CourseListAdapter;
 import com.example.firebasepractice.model.Course;
 import com.google.firebase.database.DataSnapshot;

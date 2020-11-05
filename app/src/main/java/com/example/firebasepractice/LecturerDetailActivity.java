@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.MutableLiveData;
 
 import android.app.ActivityOptions;
 import android.app.Dialog;
@@ -21,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.firebasepractice.etc.Glovar;
 import com.example.firebasepractice.model.Course;
 import com.example.firebasepractice.model.Lecturer;
 import com.example.firebasepractice.model.Student;

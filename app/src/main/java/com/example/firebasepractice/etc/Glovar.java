@@ -1,9 +1,11 @@
-package com.example.firebasepractice;
+package com.example.firebasepractice.etc;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.example.firebasepractice.R;
 
 public class Glovar {
 

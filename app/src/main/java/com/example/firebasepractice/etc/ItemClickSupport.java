@@ -1,4 +1,4 @@
-package com.example.firebasepractice;
+package com.example.firebasepractice.etc;
 
 import android.view.View;
 import android.widget.Button;
@@ -6,6 +6,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.firebasepractice.R;
 
 
 public class ItemClickSupport {

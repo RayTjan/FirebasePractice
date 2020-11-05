@@ -1,18 +1,14 @@
 package com.example.firebasepractice.adapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,15 +19,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.firebasepractice.AddCourseActivity;
-import com.example.firebasepractice.Glovar;
-import com.example.firebasepractice.LecturerDataActivity;
-import com.example.firebasepractice.LecturerDetailActivity;
-import com.example.firebasepractice.RegisterStudentActivity;
+import com.example.firebasepractice.etc.Glovar;
 import com.example.firebasepractice.model.Course;
 import com.example.firebasepractice.model.Lecturer;
 import com.example.firebasepractice.R;
-import com.example.firebasepractice.model.Student;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,8 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.CardViewViewHolder> {
 

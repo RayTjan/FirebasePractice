@@ -15,10 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 
-import com.example.firebasepractice.Glovar;
-import com.example.firebasepractice.ItemClickSupport;
+import com.example.firebasepractice.etc.Glovar;
 import com.example.firebasepractice.R;
-import com.example.firebasepractice.adapter.CourseListAdapter;
 import com.example.firebasepractice.adapter.ScheduleAdapter;
 import com.example.firebasepractice.model.Course;
 import com.google.firebase.auth.FirebaseAuth;

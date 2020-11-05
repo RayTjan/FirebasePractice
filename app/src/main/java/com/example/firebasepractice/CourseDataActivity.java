@@ -14,9 +14,8 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 
 import com.example.firebasepractice.adapter.CourseAdapter;
-import com.example.firebasepractice.adapter.LecturerAdapter;
+import com.example.firebasepractice.etc.ItemClickSupport;
 import com.example.firebasepractice.model.Course;
-import com.example.firebasepractice.model.Lecturer;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
