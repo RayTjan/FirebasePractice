@@ -5,9 +5,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logo"
-        android:label="EDUCATE"
-        android:roundIcon="@drawable/logo"
+        android:icon="@drawable/monster_hauntedhouse2"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/monster_hauntedhouse2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".CourseDataActivity"></activity>

@@ -45,10 +45,10 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.CardVi
         holder.lbl_gender.setText(lecturer.getGender());
         holder.lbl_expertise.setText(lecturer.getExpertise());
         if (holder.lbl_gender.getText().equals("Male")){
-            holder.iconGender.setImageResource(R.drawable.teachguy);
+            holder.iconGender.setImageResource(R.drawable.monster_jack_o_lantern);
         }
         else{
-            holder.iconGender.setImageResource(R.drawable.teachfemale);
+            holder.iconGender.setImageResource(R.drawable.monster_witch);
         }
     }
 

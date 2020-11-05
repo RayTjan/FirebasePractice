@@ -10,11 +10,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,8 +39,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -65,13 +70,13 @@ public class RegisterStudentActivity extends AppCompatActivity {
     Dialog dialog;
     Student student;
     ImageView profilePic;
-    Button changePic;
+    ImageView changePic;
     private Uri mImageUri;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
-
+    String editImageUri;
     private StorageTask mUploadTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,7 @@ public class RegisterStudentActivity extends AppCompatActivity {
         mUserDatabase = FirebaseDatabase.getInstance().getReference("Student");
         dialog = Glovar.loadingDialog(this);
         bar = findViewById(R.id.toolbarAddStu);
+        editImageUri = null;
         setSupportActionBar(bar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -105,24 +111,9 @@ public class RegisterStudentActivity extends AppCompatActivity {
         mAddress.getEditText().addTextChangedListener(inputCheck);
         mEmail.getEditText().addTextChangedListener(inputCheck);
         mPassword.getEditText().addTextChangedListener(inputCheck);
-        Intent intent = getIntent();
-        action = intent.getStringExtra("action");
+        Intent previousIntent = getIntent();
+        action = previousIntent.getStringExtra("action");
 
-//        Intent intent = getIntent();
-//        action = intent.getStringExtra("action");
-//        if (action.equalsIgnoreCase("add")){
-//            getSupportActionBar().setTitle("Register Student");
-//            buttonLR.setText("Register Student");
-//            buttonLR.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    addStudent();
-//                }
-//            });
-//        }
-//        else if (action.equalsIgnoreCase("edit")){
-//            getFormValue();
-//        }
         changePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +142,8 @@ public class RegisterStudentActivity extends AppCompatActivity {
             });
         }else{ //saat activity dari lecturer detail & mau mengupdate data
             getSupportActionBar().setTitle("EDIT STUDENT");
-            student = intent.getParcelableExtra("edit_data_student");
+            student = previousIntent.getParcelableExtra("edit_data_student");
+            setEditImage(student.getId());
             mName.getEditText().setText(student.getName());
             mNIM.getEditText().setText(student.getNim());
             mAge.getEditText().setText(student.getAge());
@@ -173,11 +165,12 @@ public class RegisterStudentActivity extends AppCompatActivity {
             buttonLR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if (mUploadTask!=null &&mUploadTask.isInProgress()){
                         Toast.makeText(RegisterStudentActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        uploadFile(student.getId());
+                    else if (mImageUri!=null){
+                        uploadFile(student.getId(),"edit");
                     }
                     dialog.show();
                     getFormValue();
@@ -195,17 +188,60 @@ public class RegisterStudentActivity extends AppCompatActivity {
                         public void onSuccess(Void aVoid) {
                             dialog.cancel();
                             Toast.makeText(RegisterStudentActivity.this, "Edit Successfully", Toast.LENGTH_SHORT).show();
-                            Intent intent;
-                            intent = new Intent(RegisterStudentActivity.this, StudentDataActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
-                            startActivity(intent, options.toBundle());
-                            finish();
+                            if (getIntent().getStringExtra("fromProfile")!=null&&getIntent().getStringExtra("fromProfile").equalsIgnoreCase("yes")){
+                                Intent intent;
+                                intent = new Intent(RegisterStudentActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra("fromProfile","yes");
+                                intent.putExtra("state", "update profile");
+                                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
+                                startActivity(intent, options.toBundle());
+                                finish();
+                            }
+                            else{
+                                Intent intent;
+                                intent = new Intent(RegisterStudentActivity.this, StudentDataActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
+                                startActivity(intent, options.toBundle());
+                                finish();
+                            }
+
                         }
                     });
                 }
             });
         }
+    }
+
+    private void setEditImage(final String id) {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()){
+                        Upload upload = childSnapshot.getValue(Upload.class);
+                        if (upload.getName().equals(id)){
+                            Picasso.get()
+                                    .load(upload.getImageUrl())
+                                    .placeholder(R.drawable.monster_skeleton)
+                                    .fit()
+                                    .centerCrop()
+                                    .into(profilePic);
+                            editImageUri = upload.getImageUrl();
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void openFileChooser() {
@@ -223,7 +259,11 @@ public class RegisterStudentActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             mImageUri = data.getData();
 
-            Picasso.get().load(mImageUri).into(profilePic);
+            Picasso.get()
+                    .load(mImageUri)
+                    .fit()
+                    .centerCrop()
+                    .into(profilePic);
         }
     }
 
@@ -234,7 +274,17 @@ public class RegisterStudentActivity extends AppCompatActivity {
         //only to get file extension from image
     }
 
-    private void uploadFile(final String sid) {
+    private void uploadFile(final String sid, final String act) {
+        if (act.equals("edit") && editImageUri!=null ){
+            StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(editImageUri);
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mDatabaseRef.child(sid).removeValue();
+                }
+            });
+        }
+
         if (mImageUri != null) {
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() +
                     "." + getFileExtension(mImageUri));
@@ -244,12 +294,6 @@ public class RegisterStudentActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-//                            Toast.makeText(RegisterStudentActivity.this, "Upload Successful!", Toast.LENGTH_LONG).show();
-//                            Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),
-//                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-//                            String uploadID = mDatabaseRef.push().getKey();
-//                            mDatabaseRef.child(uploadID).setValue(upload);
                             Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                             while (!urlTask.isSuccessful());
                             Uri downloadUrl = urlTask.getResult();
@@ -292,7 +336,7 @@ public class RegisterStudentActivity extends AppCompatActivity {
                     Toast.makeText(RegisterStudentActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    uploadFile(student.getId());
+                    uploadFile(student.getId(),"add");
                 }
                 if (task.isSuccessful()){
                     Handler handler = new Handler();
@@ -315,10 +359,11 @@ public class RegisterStudentActivity extends AppCompatActivity {
 
                         }
                     });
-                    mAuth.signOut();
+//                    mAuth.signOut();
                     Intent intent = new Intent(RegisterStudentActivity.this,RegisterStudentActivity.class);
                     intent.putExtra("action", "add");
                     startActivity(intent);
+                    finish();
                 }
                 else{
                     try {
@@ -360,14 +405,18 @@ public class RegisterStudentActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.student_menu,menu);
+        if (action.equals("add")){
+            getMenuInflater().inflate(R.menu.student_menu,menu);
+        }
         return true;
+
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id==android.R.id.home){
             if (action.equals("add")){
                 Intent intent;
@@ -377,11 +426,24 @@ public class RegisterStudentActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
             }
             else{
-                Intent intent;
-                intent = new Intent(RegisterStudentActivity.this, StudentDataActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
-                startActivity(intent, options.toBundle());
+
+                if (getIntent().getStringExtra("fromProfile")!=null&&getIntent().getStringExtra("fromProfile").equalsIgnoreCase("yes")){
+                    Log.d("editin","PROFILE");
+                    Intent intent;
+                    intent = new Intent(RegisterStudentActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("fromProfile","yes");
+                    intent.putExtra("state", "update profile");
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
+                    startActivity(intent, options.toBundle());
+                }
+                else{
+                    Intent intent;
+                    intent = new Intent(RegisterStudentActivity.this, StudentDataActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
+                    startActivity(intent, options.toBundle());
+                }
             }
             finish();
             return true;
@@ -407,13 +469,25 @@ public class RegisterStudentActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
             startActivity(intent, options.toBundle());
+
         }
         else{
-            Intent intent;
-            intent = new Intent(RegisterStudentActivity.this, StudentDataActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
-            startActivity(intent, options.toBundle());
+            if (getIntent().getStringExtra("fromProfile")!=null&&getIntent().getStringExtra("fromProfile").equalsIgnoreCase("yes")){
+                Intent intent;
+                intent = new Intent(RegisterStudentActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("fromProfile","yes");
+                intent.putExtra("state", "update profile");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
+                startActivity(intent, options.toBundle());
+            }
+            else{
+                Intent intent;
+                intent = new Intent(RegisterStudentActivity.this, StudentDataActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterStudentActivity.this);
+                startActivity(intent, options.toBundle());
+            }
         }
         finish();
 

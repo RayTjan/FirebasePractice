@@ -103,16 +103,14 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
                     if (upload.getName().equals(student.getId())){
                         Picasso.get()
                                 .load(upload.getImageUrl())
-                                .placeholder(R.drawable.profile)
+                                .placeholder(R.drawable.monster_skeleton)
                                 .fit()
                                 .centerCrop()
                                 .into(holder.imageVIew);
                         imageUri[0] = upload.getImageUrl();
                     }
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -165,12 +163,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
                                                 firebaseUser.delete();
                                                 if ( !imageUri[0].equals("none")){
                                                     StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUri[0]);
-                                                    imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            dbImage.child(student.getId()).removeValue();
-                                                        }
-                                                    });
+                                                    imageRef.delete();
                                                 }
                                                 dbStudent.child(student.getId()).removeValue(new DatabaseReference.CompletionListener() {
                                                     @Override

@@ -117,23 +117,6 @@ public class StudentDataActivity extends AppCompatActivity {
         rvStudent.setAdapter(studentAdapter);
 
 
-//        ItemClickSupport.addTo(rvStudent).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-//            @Override
-//            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-//                v.startAnimation(klik);
-//                Intent intent = new Intent(StudentDataActivity.this, StudentDetailActivity.class);
-//                Student student = new Student(list.get(position).getId(), list.get(position).getName(), list.get(position).getNim(), list.get(position).getGender(),
-//                        list.get(position).getAge(),list.get(position).getAddress(),list.get(position).getEmail(),list.get(position).getPassword());
-//                intent.putExtra("data_student", student);
-//                intent.putExtra("position", position);
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StudentDataActivity.this);
-//                startActivity(intent, options.toBundle());
-//                finish();
-//            }
-//
-//
-//        });
-
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

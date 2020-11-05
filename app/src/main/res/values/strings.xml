@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FirebasePractice</string>
+    <string name="app_name">UnSchool</string>
     <string-array name="timeStart">
         <item>07:30:00</item>
         <item>08:00:00</item>

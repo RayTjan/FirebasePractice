@@ -4,34 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context=".AddCourseActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_inputL_subject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginRight="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarAddCourse">
+        android:textColorHint="@color/colorFont"
+        android:theme="@style/personalizedTIL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView11">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nevis"
             android:hint="Course Subject"
+            android:textColor="@color/colorWhite"
             android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Spinner
         android:id="@+id/spinner_day"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:entries="@array/day"
+        android:theme="@style/personalizedSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_day" />
@@ -44,7 +50,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/nevis"
         android:text="Day"
-        android:textColor="#000000"
+        android:textColor="@color/colorFont"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +64,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/nevis"
         android:text="Time"
-        android:textColor="#000000"
+        android:textColor="@color/colorFont"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,10 +73,11 @@
     <Spinner
         android:id="@+id/spinner_timeS"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_height="wrap_content"
         android:entries="@array/timeStart"
+        android:theme="@style/personalizedSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -83,7 +90,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/nevis"
         android:text="Lecturer"
-        android:textColor="#000000"
+        android:textColor="@color/colorFont"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,6 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:theme="@style/personalizedSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_lecturer" />
@@ -108,10 +116,10 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/background_setter"
         android:enabled="false"
-        android:fontFamily="@font/balsamiqsansbold"
+        android:fontFamily="@font/maryndavidbold"
         android:text="Add Course"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textColor="@color/colorBlack1"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -124,6 +132,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/nevis"
         android:text="Start"
+        android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_time" />
@@ -136,17 +145,19 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/nevis"
         android:text="Finish"
+        android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_timeS" />
 
     <Spinner
         android:id="@+id/spinner_timeF"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:entries="@array/timeFin"
+        android:theme="@style/personalizedSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -162,16 +173,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="ADD COURSE"
-        app:titleTextColor="@color/colorFont" />
+        app:titleTextAppearance="@style/personalizedTopBar"
+        app:titleTextColor="@color/colorBlack1" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAddCourse"
+        app:srcCompat="@drawable/monster_slime_toolbar" />
 
     <ImageView
         android:id="@+id/imageView11"
-        android:layout_width="160dp"
-        android:layout_height="230dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_addCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_lecturer"
-        app:srcCompat="@drawable/pencil" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView14"
+        app:srcCompat="@drawable/monster_magicbook" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

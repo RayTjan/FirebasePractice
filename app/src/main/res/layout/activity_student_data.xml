@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context=".LecturerDataActivity">
 
 
@@ -18,15 +19,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="STUDENT DATA"
-        app:titleTextColor="@color/colorFont" />
+        app:titleTextAppearance="@style/personalizedTopBar"
+        app:titleTextColor="@color/colorBlack1" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_StuData"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarStuData" />
+
+    <ImageView
+        android:id="@+id/imageView18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:background="@drawable/background_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarStuData"
+        app:srcCompat="@drawable/monster_slime_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

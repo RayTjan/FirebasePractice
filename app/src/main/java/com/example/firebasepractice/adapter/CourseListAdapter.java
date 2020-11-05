@@ -3,6 +3,7 @@ package com.example.firebasepractice.adapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -77,19 +78,29 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Ca
     public void onBindViewHolder(@NonNull final CourseListAdapter.CardViewViewHolder holder, final int position) {
         final Course course = getListCourse().get(position);
         ArrayList<Course> listCourse = new ArrayList<Course>();
+        final DatabaseReference dbLect = FirebaseDatabase.getInstance().getReference("Lecturer");
         final DatabaseReference dbCourse = FirebaseDatabase.getInstance().getReference("Course");
         final DatabaseReference dbStudent = FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
+        final MutableLiveData<String> getLectName = new MutableLiveData<>();
 
-        final ArrayList<Course> finalListCourse = listCourse;
         dialog = Glovar.loadingDialog(context);
-        dbCourse.addValueEventListener(new ValueEventListener() {
+        dbLect.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    Course course = childSnapshot.getValue(Course.class);
-                    finalListCourse.add(course);
+                for (DataSnapshot childSnapshot : snapshot.getChildren()){
+                    Lecturer teacher = childSnapshot.getValue(Lecturer.class);
+                    if (course.getLecturerID().equals(teacher.getId()) ){
+                        getLectName.setValue(teacher.getName());
+                        break;
+                    }
 
                 }
+                if (!getLectName.getValue().isEmpty()){
+                    fillHolder(getLectName.getValue(), holder, course,dbCourse, dbStudent);
+
+                }
+
+
             }
 
             @Override
@@ -97,122 +108,31 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Ca
 
             }
         });
+        dialog.cancel();
+
+
+    }
+
+    private void fillHolder(String lecturerName, CourseListAdapter.CardViewViewHolder holder, final Course course, final DatabaseReference dbCourse, final DatabaseReference dbStudent) {
         holder.cardName.setText(course.getSubjectName());
         holder.cardDay.setText(course.getDay());
         holder.cardTime.setText(course.getStartTime() + " - " + course.getFinishTime());
-        holder.cardLect.setText(course.getLecturer());
+        holder.cardLect.setText(lecturerName);
         holder.takeCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.startAnimation(klik);
-                new AlertDialog.Builder(context)
-                        .setTitle("Confirmation")
-                        .setMessage("Do you really want to take " + course.getSubjectName() + " ?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialogInterface, int i) {
-                                try {
-                                    if (checkCourseTime(dbStudent, course.getStartTime(), course.getFinishTime())) {
-                                        new AlertDialog.Builder(context)
-                                                .setTitle("Warning")
-                                                .setMessage("Overlapping schedule!")
-                                                .setCancelable(false)
-                                                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(final DialogInterface dialogInterface, int i) {
-//                                            Intent toMain = new Intent(AddCourseActivity.this, AddCourseActivity.class);
-//                                            toMain.putExtra("action", "add");
-//                                            startActivity(toMain);
-//                                            finish();
-                                                        dialogInterface.cancel();
+                getCourseTakenList(dbStudent,course,dbCourse);
 
-                                                    }
-                                                })
-                                                .create()
-                                                .show();
-                                    } else {
-                                        dialog.show();
-                                        new Handler().postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                dialog.cancel();
-                                                dbStudent.child(course.getId()).setValue(course).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Toast.makeText(context, "Course added successfully!", Toast.LENGTH_SHORT).show();
-
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(context, "Course added successfully!", Toast.LENGTH_SHORT).show();
-
-                                                    }
-                                                });
-                                                dialogInterface.cancel();
-
-                                            }
-                                        }, 2000);
-                                    }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .create()
-                        .show();
             }
         });
     }
+
+
 
     @Override
     public int getItemCount() {
         return getListCourse().size();
-    }
-
-    private Boolean checkCourseTime(DatabaseReference courseDB, String timeStart, String timeFinish) throws ParseException {
-        final Boolean[] overlap = {false};
-//        final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        final int startSecond = turnStringTimetoInt(timeStart);
-        final int finishSecond = turnStringTimetoInt(timeFinish);
-        courseDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    Course course = childSnapshot.getValue(Course.class);
-                    assert course != null;
-                    int startDataSec = turnStringTimetoInt(course.getStartTime());
-                    int finishDataSec = turnStringTimetoInt(course.getFinishTime());
-                    Log.d("TIMES", Integer.toString(startSecond));
-                    Log.d("TIMEF", Integer.toString(finishSecond));
-                    Log.d("TIMESD", Integer.toString(startDataSec));
-                    Log.d("TIMESF", Integer.toString(finishDataSec));
-                    if ((startDataSec >= startSecond && startSecond < finishDataSec) || (startDataSec > finishSecond && finishSecond <= finishDataSec) || (startSecond < startDataSec && finishDataSec < finishSecond)) {
-                        overlap[0] = true;
-                        Log.d("OVERLAPPED", Boolean.toString(overlap[0]));
-                    }
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        Log.d("RESULT", Boolean.toString(overlap[0]));
-        Boolean momentary = overlap[0];
-        return momentary;
-        //the return does not wait for the onDataChange to do it's stuff
     }
 
     private int turnStringTimetoInt(String time) {
@@ -232,6 +152,139 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Ca
             cardLect = itemView.findViewById(R.id.textView_lnameCourseListData);
             takeCourseButton = itemView.findViewById(R.id.button_takeCourse);
         }
+    }
+
+
+    private void addToCourseTaken(final DatabaseReference dbStudent, final Course course){
+        dialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.cancel();
+                dbStudent.child(course.getId()).child("courseID").setValue(course.getId()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(context, "Course added successfully!", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "Course added successfully!", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+            }
+        }, 2000);
+    }
+
+    private  void getCourseTakenList(final DatabaseReference dbStudent, final Course course, final DatabaseReference mCourseDatabase) {
+        final ArrayList<String> coursesTaken = new ArrayList<>();
+        dbStudent.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    coursesTaken.add((String) childSnapshot.child("courseID").getValue());
+                }
+                try {
+                    checkCourseTime(course,mCourseDatabase,coursesTaken, dbStudent);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void checkCourseTime(final Course selectedCourse, DatabaseReference mCourseDatabase, final ArrayList<String> coursesTaken, final DatabaseReference dbStudent) throws ParseException {
+        final MutableLiveData<Boolean> checkOverlap = new MutableLiveData<>();
+        final int startSecond = turnStringTimetoInt(selectedCourse.getStartTime());
+        final int finishSecond = turnStringTimetoInt(selectedCourse.getFinishTime());
+        mCourseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    checkOverlap.setValue(false);
+                    Log.d("ANNOUNCE", "NO OVERLAP FOUND");
+                } else {
+                    int i = 0;
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        i++;
+                        Course course = childSnapshot.getValue(Course.class);
+                        assert course != null;
+                        Log.d("size", snapshot.getChildrenCount() + " compared to " + i);
+                        Log.d("COURSECOMPARISON", course.getId() + " COMPARED TO" + selectedCourse.getId());
+                        Log.d("LECTURER", course.getId() + " LECTURER TO" + course.getLecturerID());
+                        for (int j =0; j< coursesTaken.size();j++){
+                            if (coursesTaken.get(j).equals(course.getId())) {
+                                assert course != null;
+                                if ( selectedCourse.getDay().equals(course.getDay())) {
+                                    Log.d("comparing is going on", "COMPARING");
+                                    int startDataSec = turnStringTimetoInt(course.getStartTime());
+                                    int finishDataSec = turnStringTimetoInt(course.getFinishTime());
+                                    Log.d("TIMES", Integer.toString(startSecond));
+                                    Log.d("TIMEF", Integer.toString(finishSecond));
+                                    Log.d("TIMESD", Integer.toString(startDataSec));
+                                    Log.d("TIMESF", Integer.toString(finishDataSec));
+
+                                    if ((startDataSec > startSecond && finishSecond > finishDataSec)||(startDataSec <= startSecond && startSecond < finishDataSec) || (startDataSec < finishSecond && finishSecond <= finishDataSec)) {
+                                        checkOverlap.setValue(true);
+                                        Log.d("ANNOUNCE", "OVERLAP FOUND");
+                                        break;
+                                    }
+
+                                }
+                            }
+                        }
+
+                        if (snapshot.getChildrenCount() == i && checkOverlap.getValue() == null) {
+                            checkOverlap.setValue(false);
+                            Log.d("ANNOUNCE", "NO OVERLAP FOUND");
+                        }
+
+                    }
+                }
+
+                if (checkOverlap.getValue() != null) {
+                    if (checkOverlap.getValue()) {
+                        overlapNotification();
+                    } else {
+                        addToCourseTaken(dbStudent,selectedCourse);
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    public void overlapNotification() {
+        Log.d("OVERLAP", "OVERLAP WARNING APPEARS");
+//        Toast.makeText(this, "Overlapping", LENGTH_SHORT).show();
+        new AlertDialog.Builder(context)
+                .setTitle("Warning")
+                .setMessage("Overlapping Student schedule!")
+                .setCancelable(false)
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                    }
+                })
+                .create()
+                .show();
     }
 }
 

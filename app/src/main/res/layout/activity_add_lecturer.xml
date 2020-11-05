@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context=".AddLecturerActivity">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -11,17 +12,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginRight="10dp"
+        android:textColorHint="@color/colorFont"
+        android:theme="@style/personalizedTIL"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarAddLect">
+        app:layout_constraintTop_toBottomOf="@+id/imageView_addLectProfilePic">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nevis"
             android:hint="Full Name"
+            android:textColor="@color/colorWhite"
             android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -33,7 +38,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/nevis"
         android:text="Gender"
-        android:textColor="#000000"
+        android:textColor="@color/colorFont"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,9 +47,9 @@
     <RadioGroup
         android:id="@+id/radioGroup_LecGender"
         android:layout_width="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_LecGender">
@@ -57,6 +62,7 @@
             android:checked="true"
             android:fontFamily="@font/nevis"
             android:text="Male"
+            android:textColor="@color/colorFont"
             android:textSize="18sp" />
 
         <RadioButton
@@ -66,6 +72,7 @@
             android:layout_margin="4dp"
             android:fontFamily="@font/nevis"
             android:text="Female"
+            android:textColor="@color/colorFont"
             android:textSize="18sp" />
     </RadioGroup>
 
@@ -76,6 +83,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="10dp"
+        android:textColorHint="@color/colorFont"
+        android:theme="@style/personalizedTIL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup_LecGender">
@@ -85,6 +94,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/nevis"
             android:hint="Expertise"
+            android:textColor="#FFFFFF"
             android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,16 +107,17 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/background_setter"
         android:enabled="false"
-        android:fontFamily="@font/balsamiqsansbold"
+        android:fontFamily="@font/maryndavidbold"
         android:text="Add Lecturer"
-        android:textColor="@color/colorFont"
-        android:textSize="24sp"
+        android:textColor="@color/colorBlack1"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarAddLect"
+        style="@style/personalizedTopBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -116,17 +127,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="ADD LECTURER"
-        app:titleTextColor="@color/colorFont" />
+        app:titleTextAppearance="@style/personalizedTopBar"
+        app:titleTextColor="@color/colorBlack1" />
 
     <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="194dp"
-        android:layout_height="208dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_addLecturer"
+        android:id="@+id/imageView5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_inputL_expertise"
-        app:srcCompat="@drawable/idea" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAddLect"
+        app:srcCompat="@drawable/monster_slime_toolbar" />
+
+    <ImageView
+        android:id="@+id/imageView_addLectProfilePic"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        app:srcCompat="@drawable/monster_jack_o_lantern" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,17 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Course implements Parcelable {
-    private String id, subjectName,day, startTime,finishTime, lecturer,lecturerID;
+    private String id, subjectName,day, startTime,finishTime,lecturerID;
 
     Course(){};
 
-    public Course(String id, String subjectName, String day, String startTime, String finishTime, String lecturer, String lecturerID) {
+    public Course(String id, String subjectName, String day, String startTime, String finishTime, String lecturerID) {
         this.id = id;
         this.subjectName = subjectName;
         this.day = day;
         this.startTime = startTime;
         this.finishTime = finishTime;
-        this.lecturer = lecturer;
         this.lecturerID = lecturerID;
     }
 
@@ -24,7 +23,6 @@ public class Course implements Parcelable {
         day = in.readString();
         startTime = in.readString();
         finishTime = in.readString();
-        lecturer = in.readString();
         lecturerID = in.readString();
     }
 
@@ -80,14 +78,6 @@ public class Course implements Parcelable {
         this.finishTime = finishTime;
     }
 
-    public String getLecturer() {
-        return lecturer;
-    }
-
-    public void setLecturer(String lecturer) {
-        this.lecturer = lecturer;
-    }
-
     public String getLecturerID() {
         return lecturerID;
     }
@@ -108,7 +98,6 @@ public class Course implements Parcelable {
         dest.writeString(day);
         dest.writeString(startTime);
         dest.writeString(finishTime);
-        dest.writeString(lecturer);
         dest.writeString(lecturerID);
     }
 }

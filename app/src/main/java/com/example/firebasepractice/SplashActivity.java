@@ -15,13 +15,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        if (FirebaseAuth.getInstance().getCurrentUser() !=null) {
-            // Activity was brought to front and not created,
-            // Thus finishing this will get us to the last viewed activity
-//                        FirebaseUser fUser = getIntent().getParcelableExtra("user");
-//                        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-//                        intent.putExtra("user",fUser);
-//                        startActivity(intent);
+        if (FirebaseAuth.getInstance().getCurrentUser() !=null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("KB3XU2qO8IVZwyjtmipK62Fxx3o1")) {
             Thread splashthread = new Thread(){
                 @Override
                 public void run(){
@@ -58,7 +52,6 @@ public class SplashActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 finally {
-                    Log.d("HALLELUYA","Fail");
 
                     Intent welcomeIntent = new Intent(SplashActivity.this, StarterActivity.class);
                     startActivity(welcomeIntent);

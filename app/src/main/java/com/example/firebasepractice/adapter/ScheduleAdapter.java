@@ -3,6 +3,7 @@ package com.example.firebasepractice.adapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -25,6 +26,7 @@ import com.example.firebasepractice.AddCourseActivity;
 import com.example.firebasepractice.Glovar;
 import com.example.firebasepractice.model.Course;
 import com.example.firebasepractice.R;
+import com.example.firebasepractice.model.Lecturer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +51,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.CardVi
     }
     AlphaAnimation klik = new AlphaAnimation(1F, 0.6F);
     Dialog dialog;
+
     @NonNull
     @Override
     public ScheduleAdapter.CardViewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,18 +63,28 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.CardVi
     @Override
     public void onBindViewHolder(@NonNull final ScheduleAdapter.CardViewViewHolder holder, final int position) {
         final Course course = getListCourse().get(position);
-        ArrayList<Course> listCourse = new ArrayList<Course>();
-        final DatabaseReference dbCourse = FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
-        final ArrayList<Course> finalListCourse = listCourse;
+        final DatabaseReference dbCourse = FirebaseDatabase.getInstance().getReference("Course");
+        final MutableLiveData<String> getLectName = new MutableLiveData<>();
+        final DatabaseReference dbLect = FirebaseDatabase.getInstance().getReference("Lecturer");
+        final DatabaseReference dbStudent = FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
         dialog = Glovar.loadingDialog(context);
-        dbCourse.addValueEventListener(new ValueEventListener() {
+        dbLect.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot childSnapshot : snapshot.getChildren()){
-                    Course course = childSnapshot.getValue(Course.class);
-                    finalListCourse.add(course);
+                    Lecturer teacher = childSnapshot.getValue(Lecturer.class);
+                    if (course.getLecturerID().equals(teacher.getId()) ){
+                        getLectName.setValue(teacher.getName());
+                        break;
+                    }
 
                 }
+                if (!getLectName.getValue().isEmpty()){
+                    fillHolder(getLectName.getValue(), holder, course, dbStudent);
+
+                }
+
+
             }
 
             @Override
@@ -79,25 +92,51 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.CardVi
 
             }
         });
+        dialog.cancel();
+
+
+    }
+
+    private void fillHolder(String lecturerName, ScheduleAdapter.CardViewViewHolder holder, final Course course, final DatabaseReference dbStudent) {
+        final AlphaAnimation klik = new AlphaAnimation(1F, 0.6F);
         holder.cardName.setText(course.getSubjectName());
         holder.cardDay.setText(course.getDay());
         holder.cardTime.setText(course.getStartTime() + " - " + course.getFinishTime());
-        holder.cardLect.setText(course.getLecturer());
+        holder.cardLect.setText(lecturerName);
         holder.deleteCourse.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 v.startAnimation(klik);
-                dialog.show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        dialog.cancel();
-                        dbCourse.child(course.getId()).removeValue(new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                Toast.makeText(context, "Delete success!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        v.startAnimation(klik);
+                        new AlertDialog.Builder(context)
+                                .setTitle("Confirmation")
+                                .setMessage("Do you really want to remove " + course.getSubjectName() + " ?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(final DialogInterface dialogInterface, int i) {
+                                        dialog.show();
+                                        dbStudent.child(course.getId()).removeValue(new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                Toast.makeText(context, "Delete success!", Toast.LENGTH_SHORT).show();
+                                                dialog.cancel();
+                                            }
+                                        });
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .create()
+                                .show();
+
                     }
                 }, 2000);
             }

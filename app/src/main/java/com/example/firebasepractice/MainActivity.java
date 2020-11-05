@@ -30,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         bottomNav = findViewById(R.id.bottomNavigation);
         bar = findViewById(R.id.toolbar_main);
-        if(getIntent().getStringExtra("state").equals("relog")){
+        if (getIntent().getStringExtra("state").equals("update profile")){
+            Log.d("IM BACK", " FROM THE EDITIN PROFILE");
+        }
+        else if(getIntent().getStringExtra("state").equals("relog")){
             Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
         }
         else{
@@ -78,9 +81,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        bottomNav.setSelectedItemId(R.id.nav_FirstPage); /*mulai dimana saat run aplikasi */
-//        Fragment fragment = new HomeFragment();
-//        loadFragment(fragment);
+        if (getIntent().getStringExtra("fromProfile") != null){
+            bottomNav.setSelectedItemId(R.id.nav_ThirdPage);
+        }
+        else{
+            bottomNav.setSelectedItemId(R.id.nav_FirstPage);
+        }
     }
 
 

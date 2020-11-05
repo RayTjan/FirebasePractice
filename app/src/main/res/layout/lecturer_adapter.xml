@@ -13,6 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,7 +21,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/button_shadow">
+            android:background="@drawable/card_shadow"
+            android:backgroundTint="@color/colorPrimary">
 
             <ImageView
                 android:id="@+id/imageView_LectData"
@@ -28,7 +30,7 @@
                 android:layout_height="70dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+                app:srcCompat="@drawable/monster_jack_o_lantern" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -44,11 +46,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/nevis"
+                android:fontFamily="@font/maryndavidbold"
                 android:maxLines="1"
                 android:text="TextView"
-                android:textColor="#000000"
-                android:textSize="24sp"
+                android:textColor="@color/colorBlack1"
+                android:textSize="25sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView_LectData"
@@ -60,7 +62,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/maryndavidbold"
                 android:text="TextView"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/imageView_LectData"
                 app:layout_constraintTop_toBottomOf="@+id/textView_NamelectData" />
 
@@ -69,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView_LectData" />
@@ -81,10 +86,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:fontFamily="@font/maryndavidbold"
                 android:maxLines="2"
                 android:text="TextView"
                 android:textColor="@color/colorAccent"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -98,9 +104,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="2dp"
-                android:fontFamily="@font/nevis"
+                android:fontFamily="@font/maryndavidbold"
                 android:text="Expertise :"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />

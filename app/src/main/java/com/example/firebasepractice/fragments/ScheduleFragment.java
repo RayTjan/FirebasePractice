@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class ScheduleFragment extends Fragment {
     Toolbar bar;
-    DatabaseReference dbCourse;
+    DatabaseReference dbCourseTaken,dbCourse;
     ArrayList<Course> listCourse;
     RecyclerView rvCourse;
     AlphaAnimation klik = new AlphaAnimation(1F,0.6F);
@@ -50,19 +50,45 @@ public class ScheduleFragment extends Fragment {
 
         listCourse = new ArrayList<Course>();
         rvCourse = view.findViewById(R.id.recyclerView_CourseTaken);
-        dbCourse =  FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
-        fetchCourseData();
+        dbCourseTaken =  FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Course Taken");
+        dbCourse = FirebaseDatabase.getInstance().getReference("Course");
+        setCourseData();
     }
 
-    public void fetchCourseData(){
+    private void setCourseData() {
+        final ArrayList<Course> allCourseList = new ArrayList<>();
         dbCourse.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot childSnapshot : snapshot.getChildren()){
+                    Course course =  childSnapshot.getValue(Course.class);
+                    allCourseList.add(course);
+                }
+                fetchCourseTakenData(allCourseList);
+            }
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+    });
+    }
+
+    public void fetchCourseTakenData(final ArrayList<Course> allCourseList){
+        dbCourseTaken.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listCourse.clear();
                 rvCourse.setAdapter(null);
                 for (DataSnapshot childSnapshot : snapshot.getChildren()){
-                    Course course = childSnapshot.getValue(Course.class);
-                    listCourse.add(course);
+                    String courseId = (String) childSnapshot.child("courseID").getValue();
+                    for (int i =0; i<allCourseList.size();i++){
+                        if (courseId.equals(allCourseList.get(i).getId())){
+                            listCourse.add(allCourseList.get(i));
+                        }
+                    }
                 }
                 showCourseData(listCourse);
             }
@@ -80,19 +106,6 @@ public class ScheduleFragment extends Fragment {
         courseTakenAdapter.setListCourse(list);
         rvCourse.setAdapter(courseTakenAdapter);
 
-        ItemClickSupport.addTo(rvCourse).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-//                v.startAnimation(klik);
-//                Intent intent = new Intent(CourseDataActivity.this, CourseDetailActivity.class);
-//                Course course = new Course(list.get(position).getId(), list.get(position).getSubjectName(), list.get(position).getStartTime(), list.get(position).getFinishTime(),list.get(position).getLecturer());
-//                intent.putExtra("data_course", course);
-//                intent.putExtra("position", position);
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(CourseDataActivity.this);
-//                startActivity(intent, options.toBundle());
-//                finish();
-            }
-        });
     }
 
 

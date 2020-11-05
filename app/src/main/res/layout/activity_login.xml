@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context=".LoginStudentActivity">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -13,9 +14,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:textColorHint="@color/colorFont"
+        android:theme="@style/personalizedTIL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView9">
+        app:layout_constraintTop_toBottomOf="@+id/imageView21">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -23,6 +26,7 @@
             android:fontFamily="@font/nevis"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:textColor="@color/colorWhite"
             android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -32,13 +36,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginEnd="8dp"
+        android:textColorHint="@color/colorFont"
+        android:theme="@style/personalizedTIL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_inputL_LogEmail"
-        app:passwordToggleEnabled="true">
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorWhite">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -46,8 +51,8 @@
             android:fontFamily="@font/nevis"
             android:hint="Password"
             android:inputType="textPassword"
-            android:textSize="24sp"
-            />
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,10 +65,10 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/background_setter"
         android:enabled="false"
-        android:fontFamily="@font/balsamiqsansbold"
+        android:fontFamily="@font/maryndavidbold"
         android:text="LOGIN"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textColor="@color/colorBlack1"
+        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -79,16 +84,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="LOGIN"
-        app:titleTextColor="@color/colorFont" />
+        app:titleTextAppearance="@style/personalizedTopBar"
+        app:titleTextColor="@color/colorBlack1" />
 
     <ImageView
         android:id="@+id/imageView9"
-        android:layout_width="96dp"
-        android:layout_height="93dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarLogin"
-        app:srcCompat="@drawable/login" />
+        app:srcCompat="@drawable/monster_slime_toolbar" />
+
+    <ImageView
+        android:id="@+id/imageView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9"
+        app:srcCompat="@drawable/monster_zombie_rising" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

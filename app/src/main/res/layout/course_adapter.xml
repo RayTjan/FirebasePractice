@@ -13,6 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,7 +21,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/button_shadow">
+            android:background="@drawable/card_shadow"
+            android:backgroundTint="@color/colorPrimary">
 
             <TextView
                 android:id="@+id/textView_SNameCourseData"
@@ -29,11 +31,11 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/nevis"
+                android:fontFamily="@font/maryndavidbold"
                 android:maxLines="1"
                 android:text="TextView"
-                android:textColor="@color/colorFont"
-                android:textSize="24sp"
+                android:textColor="@color/colorBlack1"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView15"
@@ -45,9 +47,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/nevis"
                 android:text="TextView"
-                android:textColor="@color/colorBlack"
-                android:textColorHighlight="@color/colorBlack"
+                android:textColor="@color/colorBlack1"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/textView_dayCourseData"
                 app:layout_constraintTop_toBottomOf="@+id/textView_SNameCourseData" />
 
@@ -55,7 +58,7 @@
                 android:id="@+id/divider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@drawable/background"
+                android:background="@drawable/background2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView15"
                 app:layout_constraintTop_toBottomOf="@+id/textVIew_timeSCourseData" />
@@ -66,10 +69,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/maryndavidbold"
                 android:maxLines="2"
                 android:text="TextView"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
+                android:textColor="@color/colorBlack1"
+                android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView15"
@@ -82,7 +86,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/notebook" />
+                app:srcCompat="@drawable/monster_magicbook" />
 
             <TextView
                 android:id="@+id/textView_dayCourseData"
@@ -90,8 +94,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/maryndavidbold"
                 android:text="TextView"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imageView15"
                 app:layout_constraintTop_toBottomOf="@+id/textView_SNameCourseData" />
@@ -102,9 +108,10 @@
                 android:layout_height="32dp"
                 android:layout_marginEnd="4dp"
                 android:background="#DD2525"
-                android:fontFamily="@font/balsamiqsans"
+                android:fontFamily="@font/maryndavidbold"
                 android:text="DELETE"
                 android:textColor="@color/colorWhite"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_lnameCourseData" />
@@ -114,13 +121,15 @@
                 android:layout_width="75dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="4dp"
-                android:background="@color/colorPrimary"
-                android:fontFamily="@font/balsamiqsans"
+                android:background="@color/colorPrimaryDark"
+                android:fontFamily="@font/maryndavidbold"
                 android:text="Edit"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorWhite"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button_delCourse"
                 app:layout_constraintTop_toBottomOf="@+id/textView_lnameCourseData" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -85,20 +85,11 @@ public class CourseFragment extends Fragment {
         courseListAdapter.setListCourse(list);
         rvCourse.setAdapter(courseListAdapter);
 
-        ItemClickSupport.addTo(rvCourse).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-//                v.startAnimation(klik);
-//                Intent intent = new Intent(CourseDataActivity.this, CourseDetailActivity.class);
-//                Course course = new Course(list.get(position).getId(), list.get(position).getSubjectName(), list.get(position).getStartTime(), list.get(position).getFinishTime(),list.get(position).getLecturer());
-//                intent.putExtra("data_course", course);
-//                intent.putExtra("position", position);
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(CourseDataActivity.this);
-//                startActivity(intent, options.toBundle());
-//                finish();
-            }
-        });
     }
+
+
+
+
 
 }
 

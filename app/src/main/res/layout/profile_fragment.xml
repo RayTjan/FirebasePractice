@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent">
 
 
     <ImageView
@@ -12,21 +12,21 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_profileAvatar"
         app:srcCompat="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/textView_profileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/nevis"
+        android:fontFamily="@font/maryndavidbold"
         android:text="TextView"
-        android:textColor="@color/colorBlack"
-        android:textSize="36sp"
+        android:textColor="@color/colorBlack1"
+        android:textSize="54sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView8"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,8 +37,11 @@
         android:id="@+id/textView_profileNim"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/maryndavidbold"
         android:text="TextView"
-        android:textSize="24sp"
+        android:textColor="@color/colorWhite"
+        android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,9 +51,11 @@
         android:id="@+id/textView_profileEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/maryndavidbold"
         android:text="TextView"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="24sp"
+        android:textColor="@color/colorFont"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_profileNim" />
@@ -61,9 +66,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
+        android:fontFamily="@font/maryndavidbold"
         android:text="TextView"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imageView6"
         app:layout_constraintTop_toTopOf="@+id/imageView6" />
@@ -74,22 +80,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
+        android:fontFamily="@font/maryndavidbold"
         android:text="TextView"
-        android:textColor="@color/colorFont"
-        android:textSize="18sp"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imageView10"
         app:layout_constraintTop_toTopOf="@+id/imageView10" />
 
     <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="173dp"
-        android:layout_height="180dp"
+        android:id="@+id/imageView_profileAvatar"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/profile" />
+        app:srcCompat="@drawable/monster_skeleton" />
 
     <ImageView
         android:id="@+id/imageView10"
@@ -99,7 +106,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView6"
-        app:srcCompat="@drawable/ic_baseline_location_on_24" />
+        app:srcCompat="@drawable/ic_baseline_lightlocation_on_24" />
 
     <ImageView
         android:id="@+id/imageView6"
@@ -117,14 +124,30 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_shadow"
         android:backgroundTint="@color/colorPrimary"
-        android:fontFamily="@font/balsamiqsansbold"
+        android:fontFamily="@font/maryndavidbold"
         android:text="LOGOUT"
         android:textColor="@color/colorAccent"
         android:textColorLink="#FF0000"
-        android:textSize="18sp"
+        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_editProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/button_shadow"
+        android:backgroundTint="@color/colorPrimary"
+        android:fontFamily="@font/maryndavidbold"
+        android:text="EDIT"
+        android:textColor="@color/colorWhite"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_profileAddress" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

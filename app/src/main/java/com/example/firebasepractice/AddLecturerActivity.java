@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class AddLecturerActivity extends AppCompatActivity {
     Lecturer lecturer;
     Toolbar bar;
     Dialog dialog;
+    ImageView lecturerPP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +63,22 @@ public class AddLecturerActivity extends AppCompatActivity {
         addLec = findViewById(R.id.button_addLecturer);
         radioGroup = findViewById(R.id.radioGroup_LecGender);
         loadingBar = new ProgressDialog(this);
-
+        lecturerPP = findViewById(R.id.imageView_addLectProfilePic);
         nameLec.getEditText().addTextChangedListener(inputCheck);
         mexpertise.getEditText().addTextChangedListener(inputCheck);
-
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                radioButton = findViewById(checkedId);
+                String radioResult = radioButton.getText().toString();
+                if (radioResult.equals("Male")){
+                    lecturerPP.setImageResource(R.drawable.monster_jack_o_lantern);
+                }
+                else{
+                    lecturerPP.setImageResource(R.drawable.monster_witch);
+                }
+            }
+        });
 
         addLec.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,8 +205,12 @@ public class AddLecturerActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.lecturer_menu,menu);
+        if (action.equals("add")){
+            getMenuInflater().inflate(R.menu.lecturer_menu,menu);
+        }
         return true;
+
+
     }
 
     @Override

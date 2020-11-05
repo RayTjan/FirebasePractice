@@ -3,8 +3,35 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="personalizedTopBar" >
+        <item name="android:fontFamily">@font/maryndavidbold</item>
+        <item name="android:textSize">32dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="personalizeText" >
+        <item name="android:fontFamily">@font/maryndavidbold</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="personalizedTIL"  parent="TextAppearance.AppCompat">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
+
+    <style name="personalizedSpinner" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/nevis</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:backgroundTint">@color/colorWhite </item>
     </style>
 
 </resources>
