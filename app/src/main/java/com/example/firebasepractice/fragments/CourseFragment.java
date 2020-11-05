@@ -40,7 +40,6 @@ public class CourseFragment extends Fragment {
     DatabaseReference dbCourse;
     ArrayList<Course> listCourse;
     RecyclerView rvCourse;
-    Dialog dialog;
 
     AlphaAnimation klik = new AlphaAnimation(1F,0.6F);
     public CourseFragment() {
@@ -58,8 +57,7 @@ public class CourseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dialog = Glovar.loadingDialog(getActivity());
-        dialog.show();
+
         listCourse = new ArrayList<Course>();
         rvCourse = view.findViewById(R.id.recyclerView_CourseList);
         dbCourse = FirebaseDatabase.getInstance().getReference("Course");
@@ -81,7 +79,6 @@ public class CourseFragment extends Fragment {
                 }
                 if (snapshot.getChildrenCount() == counter){
                     showCourseData(listCourse);
-                    dialog.cancel();
                 }
             }
 
