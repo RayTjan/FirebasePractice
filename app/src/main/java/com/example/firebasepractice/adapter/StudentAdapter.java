@@ -163,7 +163,14 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.CardView
                                                 firebaseUser.delete();
                                                 if ( !imageUri[0].equals("none")){
                                                     StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUri[0]);
-                                                    imageRef.delete();
+                                                    imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                           FirebaseDatabase.getInstance().getReference("uploads").child(student.getId()).removeValue();
+
+                                                        }
+                                                    });
+
                                                 }
                                                 dbStudent.child(student.getId()).removeValue(new DatabaseReference.CompletionListener() {
                                                     @Override

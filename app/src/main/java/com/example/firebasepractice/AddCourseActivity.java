@@ -519,7 +519,6 @@ public class AddCourseActivity extends AppCompatActivity {
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialogInterface, int i) {
-
                         dialogInterface.cancel();
                     }
                 })
