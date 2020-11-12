@@ -22,6 +22,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginStudentActivity extends AppCompatActivity {
     TextInputLayout mEmail,mPassword;
@@ -83,6 +87,7 @@ public class LoginStudentActivity extends AppCompatActivity {
                                 toMain.putExtra("state","log");
                                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginStudentActivity.this);
                                 startActivity(toMain, options.toBundle());
+                                FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("token").setValue(FirebaseInstance.getInstance().getToken());
                                 loadingBar.dismiss();
                             }
                             else{

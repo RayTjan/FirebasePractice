@@ -150,6 +150,8 @@ public class ProfileFragment extends Fragment {
                                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity());
                                         startActivity(intent, options.toBundle());
                                         getActivity().finish();
+                                        FirebaseDatabase.getInstance().getReference("Student").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("token").setValue("");
+
                                         dialogInterface.cancel();
                                     }
                                 }, 2000);

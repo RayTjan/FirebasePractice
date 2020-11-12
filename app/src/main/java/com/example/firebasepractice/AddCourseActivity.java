@@ -539,7 +539,6 @@ public class AddCourseActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(AddCourseActivity.this, "Course Added Failed", LENGTH_SHORT).show();
-
             }
         });
         Intent toMain = new Intent(AddCourseActivity.this, AddCourseActivity.class);

@@ -330,7 +330,7 @@ public class RegisterStudentActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 uid = mAuth.getCurrentUser().getUid();
-                Student student = new Student(mAuth.getCurrentUser().getUid(),name,nim, gender,age,address,email,pass);
+                Student student = new Student(mAuth.getCurrentUser().getUid(),name,nim, gender,age,address,email,pass,"");
                 if (mUploadTask!=null &&mUploadTask.isInProgress()){
                     Toast.makeText(RegisterStudentActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                 }
